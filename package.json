@@ -1,0 +1,28 @@
+{
+  "name": "angular-templateloader",
+  "version": "1.0.0",
+  "description": "Exposes a service to asynchronously load templates in the background.",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jacopotarantino/angular-templateloader.git"
+  },
+  "keywords": [
+    "angular",
+    "async",
+    "templatecache"
+  ],
+  "author": "Jack Tarantino <jack@ofspades.com>",
+  "license": "Creative Commons Attribution-ShareAlike",
+  "bugs": {
+    "url": "https://github.com/jacopotarantino/angular-templateloader/issues"
+  },
+  "homepage": "https://github.com/jacopotarantino/angular-templateloader",
+  "devDependencies": {
+    "generator-angular-module": "^1.0.3",
+    "yo": "^1.3.3"
+  }
+}
