@@ -53,42 +53,41 @@ describe('angular-templateloader', function() {
     });
 
 
-    // describe('when invoked with a string', function() {
-    //   var $templateCache,
-    //       templateURL = 'http://mywebsite.com/templates/main.html',
-    //       templateContents = '<p>hello world.</p>';
+    describe('when invoked with a string', function() {
+      var $templateCache,
+          templateURL = 'http://mywebsite.com/templates/main.html',
+          templateContents = '<p>hello world.</p>';
 
-    //   beforeEach(function($injector) {
-    //
-    //     $httpBackend.when('GET', templateURL).respond(templateContents);
+      beforeEach(inject(function($injector) {
+        $httpBackend.when('GET', templateURL).respond(templateContents);
 
-    //     $templateCache = $injector.get('$templateCache');
-    //   });
+        $templateCache = $injector.get('$templateCache');
+      }));
 
-    //   afterEach(function() {
-    //     $httpBackend.verifyNoOutstandingExpectation();
-    //     $httpBackend.verifyNoOutstandingRequest();
-    //   });
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
 
 
-    //   it('should request a file from the specified URL', function() {
-    //     $httpBackend.expectGET(templateURL);
+      it('should request a file from the specified URL', function() {
+        $httpBackend.expectGET(templateURL);
 
-    //     templateLoader.load(templateURL);
+        templateLoader.load(templateURL);
 
-    //     $httpBackend.flush();
-    //   });
+        $httpBackend.flush();
+      });
 
-    //   it('should push that file onto $templateCache', function() {
-    //     $httpBackend.expectGET(templateURL);
+      it('should push that file onto $templateCache', function() {
+        $httpBackend.expectGET(templateURL);
 
-    //     templateLoader.load(templateURL);
+        templateLoader.load(templateURL);
 
-    //     $httpBackend.flush();
+        $httpBackend.flush();
 
-    //     expect($templateCache.get(templateURL)).toBe(templateContents);
-    //   });
-    // });
+        expect($templateCache.get(templateURL)).toBe(templateContents);
+      });
+    });
 
     // describe('when invoked with an array', function() {
 
