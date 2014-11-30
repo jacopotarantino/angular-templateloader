@@ -12,7 +12,14 @@ module.exports = function(grunt) {
         loopfunc: true,
         browser: true,
         globals: {
-          angular: true
+          angular: true,
+          describe: true,
+          it: true,
+          expect: true,
+          jasmine: true,
+          beforeEach: true,
+          afterEach: true,
+          inject: true
         }
       },
       test: {
@@ -22,7 +29,7 @@ module.exports = function(grunt) {
         },
         files: {
           src: [
-            'index.js',
+            'templateloader.js',
             'test/*.js'
           ]
         }
@@ -31,9 +38,7 @@ module.exports = function(grunt) {
 
     karma: {
       unit: {
-        configFile: 'karma.conf.js',
-        singleRun: true,
-        browsers: [ 'PhantomJS' ]
+        configFile: 'karma.conf.js'
       }
     },
 
@@ -45,7 +50,7 @@ module.exports = function(grunt) {
       },
       build: {
         files: {},
-        src: 'index.js',
+        src: 'templateloader.js',
         dest: 'templateloader.min.js'
       }
     }

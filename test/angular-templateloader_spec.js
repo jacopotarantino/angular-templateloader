@@ -1,60 +1,166 @@
+'use strict';
+
 describe('angular-templateloader', function() {
   it('should expose a module via angular', function() {
     var module = angular.module('angular-templateloader');
 
-    expect(module).toBe(jasmine.objectContaining({
-      name: 'angular-templateloader'
-    }));
+    expect(module).toBeDefined();
+    expect(module.name).toBe('angular-templateloader');
   });
 
 
-  describe('#templateLoader', function() {
-    it('should not interfere with normal template loading', function() {
-      /** @todo complete me */
+  describe('factory: templateLoader', function() {
+    var templateLoader,
+        $httpBackend;
+
+    beforeEach(module('angular-templateloader'));
+
+    beforeEach(inject(function(_templateLoader_, $injector) {
+      $httpBackend = $injector.get('$httpBackend');
+      templateLoader = _templateLoader_;
+    }));
+
+
+    it('should expose the templateLoader method', function() {
+      expect(templateLoader).toBeDefined();
+      expect(templateLoader.load).toBeDefined();
     });
 
 
-    it('should accept a string or an array as an input', function() {
-      describe('when the files option is an array', function() {
-        it('should load multiple files', function() {
-          /** @todo complete me */
-        });
-      });
+    describe('when invoked with bad arguments', function() {
+      it('should throw an error', function() {
+        expect(function() {
+          templateLoader.load()
+        }).toThrow(new Error('templateLoader expects a string, array or options hash as an input.'));
 
-      describe('when the files option is a string', function() {
-        it('should just load one file', function() {
-          /** @todo complete me */
-        });
-      });
-    });
+        expect(function() {
+          templateLoader.load('')
+        }).toThrow(new Error('templateLoader expects a string, array or options hash as an input.'));
 
+        expect(function() {
+          templateLoader.load({foo: 'bar'})
+        }).toThrow(new Error('templateLoader expects an options hash to contain a list of files.'));
 
-    it('should try to load a file again if loading fails', function() {
-      /** @todo complete me */
-    });
+        expect(function() {
+          templateLoader.load([])
+        }).toThrow(new Error('templateLoader expects arrays to contain strings referring to files.'));
 
+        expect(function() {
+          templateLoader.load('/templates/main.html')
+        }).not.toThrow();
 
-    it('should load a group of files synchronously or asynchronously', function() {
-      describe('when the "async" option is true', function() {
-        it('should try to load more than one file at once', function() {
-          /** @todo complete me */
-        });
-      });
-
-      describe('when the "async" option is false', function() {
-        it('should wait to load a second file until after the first has finished', function() {
-          /** @todo complete me */
-        });
       });
     });
 
 
-    it('should accept a hash for naming templates', function() {
-      describe('when a hash is passed', function() {
-        it('should cache a file with a custom name', function() {
-          /** @todo complete me */
-        });
-      });
-    });
+    // describe('when invoked with a string', function() {
+    //   var $templateCache,
+    //       templateURL = 'http://mywebsite.com/templates/main.html',
+    //       templateContents = '<p>hello world.</p>';
+
+    //   beforeEach(function($injector) {
+    //
+    //     $httpBackend.when('GET', templateURL).respond(templateContents);
+
+    //     $templateCache = $injector.get('$templateCache');
+    //   });
+
+    //   afterEach(function() {
+    //     $httpBackend.verifyNoOutstandingExpectation();
+    //     $httpBackend.verifyNoOutstandingRequest();
+    //   });
+
+
+    //   it('should request a file from the specified URL', function() {
+    //     $httpBackend.expectGET(templateURL);
+
+    //     templateLoader.load(templateURL);
+
+    //     $httpBackend.flush();
+    //   });
+
+    //   it('should push that file onto $templateCache', function() {
+    //     $httpBackend.expectGET(templateURL);
+
+    //     templateLoader.load(templateURL);
+
+    //     $httpBackend.flush();
+
+    //     expect($templateCache.get(templateURL)).toBe(templateContents);
+    //   });
+    // });
+
+    // describe('when invoked with an array', function() {
+
+    // });
+
+    // describe('when invoked with a full config object', function() {
+
+    // });
+
+
+    // describe('when loading a template fails due to timeout', function() {
+    //   it('should try to load the file again', function() {
+    //     /** @todo */
+    //   });
+    // });
+    // describe('when loading a template fails due to a 400 status', function() {
+    //   it('should log the error', function() {
+    //     /** @todo */
+    //   });
+    // });
+    // describe('when loading a template fails due to a 500 status', function() {
+    //   it('should log the error', function() {
+    //     /** @todo */
+    //   });
+    // });
+
+    // it('should not interfere with normal template loading', function() {
+    //   /** @todo complete me */
+    // });
+
+
+    // it('should accept a string or an array as an input', function() {
+    //   describe('when the files option is an array', function() {
+    //     it('should load multiple files', function() {
+    //       /** @todo complete me */
+    //     });
+    //   });
+
+    //   describe('when the files option is a string', function() {
+    //     it('should just load one file', function() {
+    //       /** @todo complete me */
+    //     });
+    //   });
+    // });
+
+
+    // it('should try to load a file again if loading fails', function() {
+    //   /** @todo complete me */
+    // });
+
+
+    // it('should load a group of files synchronously or asynchronously', function() {
+    //   describe('when the "async" option is true', function() {
+    //     it('should try to load more than one file at once', function() {
+    //       /** @todo complete me */
+    //     });
+    //   });
+
+    //   describe('when the "async" option is false', function() {
+    //     it('should wait to load a second file until after the first has finished', function() {
+    //       /** @todo complete me */
+    //     });
+    //   });
+    // });
+
+
+    // it('should accept a hash for naming templates', function() {
+    //   describe('when a hash is passed', function() {
+    //     it('should cache a file with a custom name', function() {
+    //       /** @todo complete me */
+    //     });
+    //   });
+    // });
   });
 });
