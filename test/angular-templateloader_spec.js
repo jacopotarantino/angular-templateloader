@@ -89,9 +89,45 @@ describe('angular-templateloader', function() {
       });
     });
 
-    // describe('when invoked with an array', function() {
 
-    // });
+    describe('when invoked with an array', function() {
+      var $templateCache,
+          templateContents = '<p>hello world.</p>',
+          templates = [
+            '/templates/main.html',
+            '/templates/sidebar.html',
+            '/templates/partials/favorite-button.html'
+          ];
+
+      beforeEach(inject(function($injector) {
+        $httpBackend.when('GET', '/templates/main.html').respond(templateContents);
+        $httpBackend.when('GET', '/templates/sidebar.html').respond(templateContents);
+        $httpBackend.when('GET', '/templates/partials/favorite-button.html').respond(templateContents);
+
+        $templateCache = $injector.get('$templateCache');
+      }));
+
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+
+      it('should return a promise that resolves when all templates have loaded', function() {
+        var loadingPromise = templateLoader.load(templates);
+
+        expect($templateCache.get('/templates/main.html')).not.toBeDefined();
+        expect($templateCache.get('/templates/sidebar.html')).not.toBeDefined();
+        expect($templateCache.get('/templates/partials/favorite-button.html')).not.toBeDefined();
+
+        $httpBackend.flush();
+
+        expect($templateCache.get('/templates/main.html')).toBeDefined();
+        expect($templateCache.get('/templates/sidebar.html')).toBeDefined();
+        expect($templateCache.get('/templates/partials/favorite-button.html')).toBeDefined();
+
+        expect(loadingPromise.$$state.status).toBe(1);
+      });
+    });
 
     // describe('when invoked with a full config object', function() {
 

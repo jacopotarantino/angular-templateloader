@@ -3,7 +3,7 @@
 
   angular.module('angular-templateloader', [])
 
-  .factory('templateLoader', function templateLoaderFactory($http, $templateCache) {
+  .factory('templateLoader', function templateLoaderFactory($http, $templateCache, $q) {
     function TemplateLoader() {}
 
 
@@ -43,11 +43,24 @@
 
 
     TemplateLoader.prototype.load = function load(options) {
+      var deferred = $q.defer(),
+          loadedTemplates = 0;
+
       _checkOptionsHasCorrectType(options);
 
       var options = _mergeOptionsIntoDefaults(options);
 
-      angular.forEach(options.files, _getSingleTemplate);
+      angular.forEach(options.files, function(url) {
+        _getSingleTemplate(url).success(function() {
+          loadedTemplates++;
+
+          if(loadedTemplates === options.files.length) {
+            deferred.resolve();
+          }
+        });
+      });
+
+      return deferred.promise;
     };
 
     return new TemplateLoader();
