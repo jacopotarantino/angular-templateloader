@@ -129,9 +129,43 @@ describe('angular-templateloader', function() {
       });
     });
 
-    // describe('when invoked with a full config object', function() {
 
-    // });
+    describe('when invoked with a full config object', function() {
+      var $templateCache,
+          templateContents = '<p>hello world.</p>',
+          templates = [
+            '/templates/main.html',
+            '/templates/sidebar.html',
+            '/templates/partials/favorite-button.html'
+          ],
+          options = {
+            foo: 'bar',
+            files: templates
+          };
+
+      beforeEach(inject(function($injector) {
+        $httpBackend.when('GET', '/templates/main.html').respond(templateContents);
+        $httpBackend.when('GET', '/templates/sidebar.html').respond(templateContents);
+        $httpBackend.when('GET', '/templates/partials/favorite-button.html').respond(templateContents);
+
+        $templateCache = $injector.get('$templateCache');
+      }));
+
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+
+      it('should merge the options with the defaults and load templates', function() {
+        templateLoader.load(options);
+
+        expect($templateCache.get('/templates/main.html')).not.toBeDefined();
+
+        $httpBackend.flush();
+
+        expect($templateCache.get('/templates/main.html')).toBeDefined();
+      });
+    });
 
 
     // describe('when loading a template fails due to timeout', function() {
