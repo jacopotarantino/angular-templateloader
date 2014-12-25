@@ -242,19 +242,102 @@ describe('angular-templateloader', function() {
     });
 
 
-    // it('should load a group of files synchronously or asynchronously', function() {
-    //   describe('when the "async" option is true', function() {
-    //     it('should try to load more than one file at once', function() {
-    //       /** @todo complete me */
-    //     });
-    //   });
+    describe('the async option', function() {
+      describe('when the "async" option is true', function() {
+        var $templateCache,
+          templateContents = '<p>hello world.</p>',
+          templates = [
+            '/templates/main.html',
+            '/templates/sidebar.html',
+            '/templates/partials/favorite-button.html'
+          ],
+          options = {
+            async: true,
+            files: templates
+          };
 
-    //   describe('when the "async" option is false', function() {
-    //     it('should wait to load a second file until after the first has finished', function() {
-    //       /** @todo complete me */
-    //     });
-    //   });
-    // });
+        beforeEach(inject(function($injector) {
+          $httpBackend.when('GET', '/templates/main.html').respond(templateContents);
+          $httpBackend.when('GET', '/templates/sidebar.html').respond(templateContents);
+          $httpBackend.when('GET', '/templates/partials/favorite-button.html').respond(templateContents);
+
+          $templateCache = $injector.get('$templateCache');
+        }));
+
+        afterEach(function() {
+          $httpBackend.verifyNoOutstandingExpectation();
+          $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it('should try to load more than one file at once', function() {
+          templateLoader.load(options);
+
+          expect($templateCache.get('/templates/main.html')).not.toBeDefined();
+          expect($templateCache.get('/templates/sidebar.html')).not.toBeDefined();
+          expect($templateCache.get('/templates/partials/favorite-button.html')).not.toBeDefined();
+
+          $httpBackend.flush(3);
+
+          expect($templateCache.get('/templates/main.html')).toBeDefined();
+          expect($templateCache.get('/templates/sidebar.html')).toBeDefined();
+          expect($templateCache.get('/templates/partials/favorite-button.html')).toBeDefined();
+        });
+      });
+
+
+      describe('when the "async" option is false', function() {
+        var $templateCache,
+            templateContents = '<p>hello world.</p>',
+            templates = [
+              '/templates/main.html',
+              '/templates/sidebar.html',
+              '/templates/partials/favorite-button.html'
+            ],
+            options = {
+              async: false,
+              files: templates
+            };
+
+        beforeEach(inject(function($injector) {
+          $httpBackend.when('GET', '/templates/main.html').respond(templateContents);
+          $httpBackend.when('GET', '/templates/sidebar.html').respond(templateContents);
+          $httpBackend.when('GET', '/templates/partials/favorite-button.html').respond(templateContents);
+
+          $templateCache = $injector.get('$templateCache');
+        }));
+
+        afterEach(function() {
+          $httpBackend.verifyNoOutstandingExpectation();
+          $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it('should wait to load a second file until after the first has finished', function() {
+          templateLoader.load(options);
+
+          expect($templateCache.get('/templates/main.html')).not.toBeDefined();
+          expect($templateCache.get('/templates/sidebar.html')).not.toBeDefined();
+          expect($templateCache.get('/templates/partials/favorite-button.html')).not.toBeDefined();
+
+          $httpBackend.flush(1);
+
+          expect($templateCache.get('/templates/main.html')).toBeDefined();
+          expect($templateCache.get('/templates/sidebar.html')).not.toBeDefined();
+          expect($templateCache.get('/templates/partials/favorite-button.html')).not.toBeDefined();
+
+          $httpBackend.flush(1);
+
+          expect($templateCache.get('/templates/main.html')).toBeDefined();
+          expect($templateCache.get('/templates/sidebar.html')).toBeDefined();
+          expect($templateCache.get('/templates/partials/favorite-button.html')).not.toBeDefined();
+
+          $httpBackend.flush(1);
+
+          expect($templateCache.get('/templates/main.html')).toBeDefined();
+          expect($templateCache.get('/templates/sidebar.html')).toBeDefined();
+          expect($templateCache.get('/templates/partials/favorite-button.html')).toBeDefined();
+        });
+      });
+    });
 
 
     // it('should accept a hash for naming templates', function() {

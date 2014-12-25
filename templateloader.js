@@ -25,7 +25,8 @@
 
     function _mergeOptionsIntoDefaults(options) {
       var defaults = {
-        files: []
+        files: [],
+        async: true
       };
 
       if(typeof options === 'string') { defaults.files.push(options); }
@@ -47,6 +48,18 @@
     }
 
 
+    function _loadSyncTemplates(files, deferred) {
+      if(files.length === 0) {
+        return deferred.resolve();
+      }
+
+      _getSingleTemplate(files.pop())
+        .success(function() {
+          _loadSyncTemplates(files, deferred);
+        });
+    }
+
+
     TemplateLoader.prototype.load = function load(options) {
       var deferred = $q.defer(),
           loadedTemplates = 0;
@@ -55,19 +68,24 @@
 
       var options = _mergeOptionsIntoDefaults(options);
 
-      angular.forEach(options.files, function(url) {
-        _getSingleTemplate(url)
-          .success(function() {
-            loadedTemplates++;
+      if(options.async) {
+        angular.forEach(options.files, function(url) {
+          _getSingleTemplate(url)
+            .success(function() {
+              loadedTemplates++;
 
-            if(loadedTemplates === options.files.length) {
-              deferred.resolve();
-            }
-          })
-          .error(function() {
-            deferred.reject();
-          });
-      });
+              if(loadedTemplates === options.files.length) {
+                deferred.resolve();
+              }
+            })
+            .error(function() {
+              deferred.reject();
+            });
+        });
+
+      } else {
+        _loadSyncTemplates(options.files.reverse(), deferred);
+      }
 
       return deferred.promise;
     };
