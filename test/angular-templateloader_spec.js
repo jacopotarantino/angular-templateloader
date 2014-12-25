@@ -30,23 +30,23 @@ describe('angular-templateloader', function() {
     describe('when invoked with bad arguments', function() {
       it('should throw an error', function() {
         expect(function() {
-          templateLoader.load()
+          templateLoader.load();
         }).toThrow(new Error('templateLoader expects a string, array or options hash as an input.'));
 
         expect(function() {
-          templateLoader.load('')
+          templateLoader.load('');
         }).toThrow(new Error('templateLoader expects a string, array or options hash as an input.'));
 
         expect(function() {
-          templateLoader.load({foo: 'bar'})
+          templateLoader.load({foo: 'bar'});
         }).toThrow(new Error('templateLoader expects an options hash to contain a list of files.'));
 
         expect(function() {
-          templateLoader.load([])
+          templateLoader.load([]);
         }).toThrow(new Error('templateLoader expects arrays to contain strings referring to files.'));
 
         expect(function() {
-          templateLoader.load('/templates/main.html')
+          templateLoader.load('/templates/main.html');
         }).not.toThrow();
 
       });

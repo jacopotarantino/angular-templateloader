@@ -19,7 +19,8 @@ module.exports = function(grunt) {
           jasmine: true,
           beforeEach: true,
           afterEach: true,
-          inject: true
+          inject: true,
+          spyOn: true
         }
       },
       test: {
@@ -42,7 +43,16 @@ module.exports = function(grunt) {
       }
     },
 
-    'ng-annotate': {},
+    ngAnnotate: {
+      options: {
+        singleQuotes: true
+      },
+      build: {
+        files: {
+          'templateloader.min.js': ['templateloader.js']
+        }
+      }
+    },
 
     uglify: {
       options: {
@@ -50,7 +60,7 @@ module.exports = function(grunt) {
       },
       build: {
         files: {},
-        src: 'templateloader.js',
+        src: 'templateloader.min.js',
         dest: 'templateloader.min.js'
       }
     }
@@ -60,7 +70,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'jshint',
     'karma',
-    'ng-annotate',
+    'ngAnnotate',
     'uglify'
   ]);
 };

@@ -74,13 +74,13 @@
     }
 
 
-    TemplateLoader.prototype.load = function load(options) {
+    TemplateLoader.prototype.load = function load(config) {
       var deferred = $q.defer(),
           loadedTemplates = 0;
 
-      _checkOptionsHasCorrectType(options);
+      _checkOptionsHasCorrectType(config);
 
-      var options = _mergeOptionsIntoDefaults(options);
+      var options = _mergeOptionsIntoDefaults(config);
 
       if(options.async) {
         angular.forEach(options.files, function(url, name) {
