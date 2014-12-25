@@ -34,7 +34,7 @@ angular
 
 You may also pass in a hash of named templates if you wish to retrieve them by name later:
 
-```javscript
+```javascript
 templateLoader.load({
   files: {
     header: '/partials/header.html',
@@ -46,11 +46,11 @@ templateLoader.load({
 
 And as a shortcut method, you can pass a string with a single template or an array of multiple templates straight to the `#load` method:
 
-```javscript
+```javascript
 templateLoader.load('/partials/page2.html');
 ```
 
-```javscript
+```javascript
 templateLoader.load([
   '/partials/header.html',
   '/partials/page2.html',
