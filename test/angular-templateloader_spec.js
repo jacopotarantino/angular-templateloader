@@ -168,45 +168,78 @@ describe('angular-templateloader', function() {
     });
 
 
-    // describe('when loading a template fails due to timeout', function() {
-    //   it('should try to load the file again', function() {
-    //     /** @todo */
-    //   });
-    // });
-    // describe('when loading a template fails due to a 400 status', function() {
-    //   it('should log the error', function() {
-    //     /** @todo */
-    //   });
-    // });
-    // describe('when loading a template fails due to a 500 status', function() {
-    //   it('should log the error', function() {
-    //     /** @todo */
-    //   });
-    // });
+    describe('when loading a template fails due to a 400 status', function() {
+      var $templateCache,
+          $log;
 
-    // it('should not interfere with normal template loading', function() {
-    //   /** @todo complete me */
-    // });
+      beforeEach(inject(function($injector) {
+        $httpBackend.when('GET', '/templates/main.html').respond(404);
+
+        $log = $injector.get('$log');
+        $templateCache = $injector.get('$templateCache');
+
+        spyOn($log, 'error');
+      }));
+
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+
+      it('should log the error', function() {
+        var promise = templateLoader.load('/templates/main.html');
+
+        $httpBackend.flush();
+
+        expect($log.error).toHaveBeenCalledWith('A template failed to load with status: 404');
+        expect($templateCache.get('/templates/main.html')).not.toBeDefined();
+      });
+
+      it('should reject the promise', function() {
+        var promise = templateLoader.load('/templates/main.html');
+
+        $httpBackend.flush();
+
+        expect(promise.$$state.status).toBe(2);
+      });
+    });
 
 
-    // it('should accept a string or an array as an input', function() {
-    //   describe('when the files option is an array', function() {
-    //     it('should load multiple files', function() {
-    //       /** @todo complete me */
-    //     });
-    //   });
+    describe('when loading a template fails due to a 500 status', function() {
+      var $templateCache,
+          $log;
 
-    //   describe('when the files option is a string', function() {
-    //     it('should just load one file', function() {
-    //       /** @todo complete me */
-    //     });
-    //   });
-    // });
+      beforeEach(inject(function($injector) {
+        $httpBackend.when('GET', '/templates/main.html').respond(500);
 
+        $log = $injector.get('$log');
+        $templateCache = $injector.get('$templateCache');
 
-    // it('should try to load a file again if loading fails', function() {
-    //   /** @todo complete me */
-    // });
+        spyOn($log, 'error');
+      }));
+
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+
+      it('should log the error', function() {
+        var promise = templateLoader.load('/templates/main.html');
+
+        $httpBackend.flush();
+
+        expect($log.error).toHaveBeenCalledWith('A template failed to load with status: 500');
+        expect($templateCache.get('/templates/main.html')).not.toBeDefined();
+      });
+
+      it('should reject the promise', function() {
+        var promise = templateLoader.load('/templates/main.html');
+
+        $httpBackend.flush();
+
+        expect(promise.$$state.status).toBe(2);
+      });
+    });
 
 
     // it('should load a group of files synchronously or asynchronously', function() {

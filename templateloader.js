@@ -3,7 +3,7 @@
 
   angular.module('angular-templateloader', [])
 
-  .factory('templateLoader', function templateLoaderFactory($http, $templateCache, $q) {
+  .factory('templateLoader', function templateLoaderFactory($http, $templateCache, $q, $log) {
     function TemplateLoader() {}
 
 
@@ -35,10 +35,15 @@
       return defaults;
     }
 
+
     function _getSingleTemplate(templateURL) {
-      return $http.get(templateURL).success(function(data) {
-        $templateCache.put(templateURL, data);
-      });
+      return $http.get(templateURL)
+        .success(function(data) {
+          $templateCache.put(templateURL, data);
+        })
+        .error(function(data, status) {
+          $log.error('A template failed to load with status: ' + status);
+        });
     }
 
 
@@ -51,13 +56,17 @@
       var options = _mergeOptionsIntoDefaults(options);
 
       angular.forEach(options.files, function(url) {
-        _getSingleTemplate(url).success(function() {
-          loadedTemplates++;
+        _getSingleTemplate(url)
+          .success(function() {
+            loadedTemplates++;
 
-          if(loadedTemplates === options.files.length) {
-            deferred.resolve();
-          }
-        });
+            if(loadedTemplates === options.files.length) {
+              deferred.resolve();
+            }
+          })
+          .error(function() {
+            deferred.reject();
+          });
       });
 
       return deferred.promise;
