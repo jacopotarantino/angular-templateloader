@@ -125,7 +125,7 @@ describe('angular-templateloader', function() {
         expect($templateCache.get('/templates/sidebar.html')).toBeDefined();
         expect($templateCache.get('/templates/partials/favorite-button.html')).toBeDefined();
 
-        expect(loadingPromise.$$state.status).toBe(1);
+        expect(loadingPromise.$$state.status).toBe(0);
       });
     });
 
@@ -340,12 +340,46 @@ describe('angular-templateloader', function() {
     });
 
 
-    // it('should accept a hash for naming templates', function() {
-    //   describe('when a hash is passed', function() {
-    //     it('should cache a file with a custom name', function() {
-    //       /** @todo complete me */
-    //     });
-    //   });
-    // });
+    describe('when the loader is passed a hash for naming templates', function() {
+      var $templateCache,
+          templateContents = '<p>hello world.</p>',
+          templates = {
+            peanut: '/templates/main.html',
+            butter: '/templates/sidebar.html',
+            jelly: '/templates/partials/favorite-button.html'
+          },
+          options = {
+            foo: 'bar',
+            files: templates
+          };
+
+      beforeEach(inject(function($injector) {
+        $httpBackend.when('GET', '/templates/main.html').respond(templateContents);
+        $httpBackend.when('GET', '/templates/sidebar.html').respond(templateContents);
+        $httpBackend.when('GET', '/templates/partials/favorite-button.html').respond(templateContents);
+
+        $templateCache = $injector.get('$templateCache');
+      }));
+
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+
+      it('should cache a file with a custom name', function() {
+        templateLoader.load(options);
+
+        expect($templateCache.get('peanut')).not.toBeDefined();
+        expect($templateCache.get('butter')).not.toBeDefined();
+        expect($templateCache.get('jelly')).not.toBeDefined();
+
+        $httpBackend.flush();
+
+        expect($templateCache.get('/templates/main.html')).not.toBeDefined();
+        expect($templateCache.get('peanut')).toBeDefined();
+        expect($templateCache.get('butter')).toBeDefined();
+        expect($templateCache.get('jelly')).toBeDefined();
+      });
+    });
   });
 });

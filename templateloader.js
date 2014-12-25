@@ -24,23 +24,34 @@
 
 
     function _mergeOptionsIntoDefaults(options) {
-      var defaults = {
-        files: [],
-        async: true
-      };
+      var filesHash,
+          defaults = {
+            files: [],
+            async: true
+          };
 
       if(typeof options === 'string') { defaults.files.push(options); }
       if(options.constructor === Array) { defaults.files = options; }
       if(options.constructor === Object) { angular.extend(defaults, options); }
 
+      if(defaults.files.constructor === Array) {
+        filesHash = {};
+
+        angular.forEach(defaults.files, function(url) {
+          filesHash[url] = url;
+        });
+
+        defaults.files = filesHash;
+      }
+
       return defaults;
     }
 
 
-    function _getSingleTemplate(templateURL) {
+    function _getSingleTemplate(name, templateURL) {
       return $http.get(templateURL)
         .success(function(data) {
-          $templateCache.put(templateURL, data);
+          $templateCache.put(name, data);
         })
         .error(function(data, status) {
           $log.error('A template failed to load with status: ' + status);
@@ -49,12 +60,15 @@
 
 
     function _loadSyncTemplates(files, deferred) {
-      if(files.length === 0) {
+      var keys = Object.keys(files);
+
+      if(keys.length === 0) {
         return deferred.resolve();
       }
 
-      _getSingleTemplate(files.pop())
+      _getSingleTemplate(keys[0], files[keys[0]])
         .success(function() {
+          delete files[keys[0]];
           _loadSyncTemplates(files, deferred);
         });
     }
@@ -69,8 +83,8 @@
       var options = _mergeOptionsIntoDefaults(options);
 
       if(options.async) {
-        angular.forEach(options.files, function(url) {
-          _getSingleTemplate(url)
+        angular.forEach(options.files, function(url, name) {
+          _getSingleTemplate(name, url)
             .success(function() {
               loadedTemplates++;
 
@@ -84,7 +98,7 @@
         });
 
       } else {
-        _loadSyncTemplates(options.files.reverse(), deferred);
+        _loadSyncTemplates(options.files, deferred);
       }
 
       return deferred.promise;
@@ -93,4 +107,4 @@
     return new TemplateLoader();
   });
 
-})(angular);
+})(window.angular);
