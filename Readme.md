@@ -11,6 +11,15 @@ Angular Templateloader is an Angular.js module for preloading and cacheing templ
 One of the slowest parts of the UI when navigating an Angular app is waiting for the browser to download the template for the next view before it can be rendered. This module allows you to download and cache a list of templates in the browser before they're needed so transitions between views/states are completely seamless.
 
 
+## Installation
+
+```bash
+bower install --save angular-templateloader
+```
+
+Boom.
+
+
 ## Configuration
 
 ### `files`:
